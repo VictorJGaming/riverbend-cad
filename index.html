@@ -1,67 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Riverbend CAD / PROQA — Station 4 RBVFD</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Riverbend CAD / PROQA — Stations 4 & 3 (RBVFD)</title>
 <style>
-  :root{--bg:#0d0e11;--card:#141621;--line:#202235;--ink:#e8f7ee;--muted:#9cc7b3;--hi:#00e18e;--warn:#ffb100;--danger:#ff5a54;--good:#36d399;--blue:#67baff}
-  *{box-sizing:border-box} body{margin:0;background:#0b0c10;color:var(--ink);font:14px/1.4 ui-sans-serif,system-ui,Segoe UI,Arial}
-  header{display:flex;gap:12px;align-items:center;padding:14px 16px;border-bottom:1px solid var(--line);background:linear-gradient(#121424,#0d0e14)}
-  header h1{font-size:16px;margin:0} header .sub{color:var(--muted);font-size:12px}
-  .statusbar{margin-left:auto;display:flex;gap:8px;align-items:center}
-  .pill{border:1px solid var(--line);padding:6px 10px;border-radius:999px;background:#0f1120;font-size:12px}
-  .wrap{max-width:1250px;margin:16px auto;padding:0 16px;display:grid;grid-template-columns: 1.3fr .9fr;gap:16px}
-  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:0 6px 24px rgba(0,0,0,.35)}
-  .card h3{margin:0;padding:12px 14px;border-bottom:1px solid var(--line);background:#121424;font-size:13px;text-transform:uppercase;letter-spacing:.6px;color:#bfe9cb}
+  :root{
+    --bg:#0e1014;--card:#141826;--mut:#9fb8c2;--ink:#e9f7ef;--line:#20263a;
+    --A:#2ecc71;--B:#1abc9c;--C:#f1c40f;--D:#e67e22;--E:#e74c3c
+  }
+  *{box-sizing:border-box}body{margin:0;background:#0b0d12;color:var(--ink);font:14px/1.4 ui-sans-serif,system-ui,Segoe UI,Arial}
+  header{display:flex;gap:10px;align-items:center;padding:12px 14px;border-bottom:1px solid var(--line);background:linear-gradient(#121522,#0e1017)}
+  h1{font-size:16px;margin:0} .sub{font-size:12px;color:var(--mut)}
+  .status{margin-left:auto;display:flex;gap:8px;align-items:center}
+  .pill{border:1px solid var(--line);padding:6px 10px;border-radius:999px;background:#0f1220;font-size:12px}
+  .wrap{max-width:1280px;margin:14px auto;padding:0 14px;display:grid;grid-template-columns:320px 1fr;gap:14px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:0 6px 22px rgba(0,0,0,.35)}
+  .card h3{margin:0;padding:10px 12px;border-bottom:1px solid var(--line);background:#121522;font-size:13px;text-transform:uppercase;letter-spacing:.5px;color:#cfeee0}
   .pad{padding:12px}
-  label{display:block;margin:8px 0 4px;color:var(--muted);font-size:12px}
-  input,select,textarea,button{width:100%;padding:9px 10px;border:1px solid #29304a;background:#0f1220;color:var(--ink);border-radius:8px;font:inherit}
-  textarea{min-height:110px;resize:vertical}
+  label{display:block;margin:8px 0 4px;color:var(--mut);font-size:12px}
+  input,select,textarea,button{width:100%;padding:9px 10px;border:1px solid #2a3150;background:#0f1220;color:var(--ink);border-radius:8px;font:inherit}
+  textarea{min-height:100px;resize:vertical}
   .row{display:grid;grid-template-columns:repeat(12,1fr);gap:10px}
-  .btn{cursor:pointer;transition:.15s transform ease}
-  .btn:hover{transform:translateY(-1px)}
-  .btn.primary{background:#1b2a20;border-color:#2f7d55}
-  .btn.warn{background:#2a2412;border-color:#7d6a2f}
-  .btn.danger{background:#2a1412;border-color:#7d2f2f}
+  .btn{cursor:pointer;transition:.15s transform ease}.btn:hover{transform:translateY(-1px)}
+  .btn.primary{background:#16261d;border-color:#2b7a4b}.btn.warn{background:#2a2412;border-color:#7d6a2f}.btn.danger{background:#2a1412;border-color:#7d2f2f}
+  .list{max-height:72vh;overflow:auto}
+  .call{border-bottom:1px solid #1f2440;padding:8px 10px;cursor:pointer}
+  .call:hover{background:#101426}
+  .code{font-weight:600}
+  .bar{height:3px;background:#333}
+  .bar.A{background:var(--A)}.bar.B{background:var(--B)}.bar.C{background:var(--C)}.bar.D{background:var(--D)}.bar.E{background:var(--E)}
   .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
   .chips{display:flex;flex-wrap:wrap;gap:8px}
-  .chip{display:inline-flex;align-items:center;gap:8px;padding:7px 10px;border:1px solid #2a2e47;border-radius:999px;background:#0f1220;cursor:pointer}
-  .chip em{font-style:normal;color:#94b1a2}
-  .chip[data-state="AVAILABLE"]{opacity:1}
-  .chip[data-state="OOS"]{opacity:.45;filter:grayscale(1)}
-  .chip[data-state="DISPATCHED"]{box-shadow:0 0 0 1px #6a5b1a inset}
-  .chip[data-state="ENROUTE"]{box-shadow:0 0 0 1px #6a6f15 inset}
-  .chip[data-state="ONSCENE"]{box-shadow:0 0 0 1px #186143 inset}
-  .chip[data-state="TRANSPORT"]{box-shadow:0 0 0 1px #1a4f7a inset}
-  .chip[data-state="RETURNING"]{box-shadow:0 0 0 1px #3d3d66 inset}
-  .chip[data-state="CLEAR"]{opacity:.8}
-  .badge{display:inline-block;padding:2px 6px;border:1px solid var(--line);border-radius:6px;font-size:11px}
-  .A{color:#79f4a1}.B{color:#78cfff}.C{color:#ffe08a}.D{color:#ffb15a}.E{color:#ff8078}
-  .log{white-space:pre-wrap;background:#0e1020;border:1px solid #232840;border-radius:10px;padding:10px;min-height:180px}
-  .note{font-size:12px;color:#93a7bd}
-  .sep{height:1px;background:linear-gradient(90deg,transparent,#232840,transparent);margin:10px 0}
-  @media (max-width:1000px){.wrap{grid-template-columns:1fr}}
+  .chip{display:inline-flex;align-items:center;gap:8px;padding:7px 10px;border:1px solid #2a2e47;border-radius:999px;background:#0f1220}
+  .mut{color:#9fb8c2}.sep{height:1px;background:linear-gradient(90deg,transparent,#232840,transparent);margin:10px 0}
+  .note{font-size:12px;color:#97a5bd}
 </style>
 </head>
 <body>
 <header>
-  <div style="width:38px;height:38px;border:1px solid var(--line);border-radius:8px;background:linear-gradient(135deg,#1a1d2d,#10121c)"></div>
+  <div style="width:36px;height:36px;border:1px solid var(--line);border-radius:8px;background:linear-gradient(135deg,#1a1d2d,#10121c)"></div>
   <div>
-    <h1>Riverbend CAD / PROQA — <span class="A">Station 4 RBVFD</span></h1>
-    <div class="sub">Fire-focused, station-based dispatch • Clawson codes • Roblox & Discord ready</div>
+    <h1>Riverbend CAD / PROQA — Stations 4 & 3 (RBVFD)</h1>
+    <div class="sub">Multi-call • Dropdown PROQA • Auto Code/Upgrades • Discord & Roblox Sync</div>
   </div>
-  <div class="statusbar">
-    <div class="pill" id="active">IDLE</div>
+  <div class="status">
+    <div class="pill">Dispatcher: <span id="disp">Unknown</span></div>
     <div class="pill" id="clock">--:--:--Z</div>
-    <div class="pill">Dispatcher: <span id="dispName">Unknown</span></div>
   </div>
 </header>
 
 <div class="wrap">
-  <!-- LEFT: Call Creator -->
+  <!-- LEFT: ACTIVE CALL LIST -->
   <section class="card">
-    <h3>Call Creator (PROQA — all questions on one screen)</h3>
+    <h3>Active Calls</h3>
+    <div class="pad">
+      <div class="row">
+        <div style="grid-column:span 6"><button class="btn primary" id="newCall">New Call</button></div>
+        <div style="grid-column:span 6;display:flex;gap:8px;justify-content:flex-end">
+          <button class="btn" id="pushDiscord">Push Discord</button>
+          <button class="btn" id="pushRoblox">Push Roblox</button>
+        </div>
+      </div>
+      <div id="callList" class="list"></div>
+    </div>
+  </section>
+
+  <!-- RIGHT: CALL DETAIL / EDITOR -->
+  <section class="card">
+    <h3 id="detailTitle">Call Details</h3>
     <div class="pad">
       <div class="row">
         <div style="grid-column:span 3">
@@ -69,26 +76,43 @@
           <input id="cad" readonly />
         </div>
         <div style="grid-column:span 3">
+          <label>Station</label>
+          <select id="station">
+            <option value="4">Station 4 RBVFD</option>
+            <option value="3" disabled>Station 3 RBVFD (later)</option>
+          </select>
+        </div>
+        <div style="grid-column:span 3">
           <label>Category</label>
           <select id="category">
             <option value="FIRE">🔥 Fire</option>
             <option value="EMS">🚑 EMS</option>
             <option value="RESCUE">🚒 Rescue / MVA</option>
-            <option value="SERVICE">⚙️ Service / Investigation</option>
+            <option value="SERVICE">⚙️ Service</option>
           </select>
         </div>
         <div style="grid-column:span 3">
-          <label>Incident Subtype</label>
+          <label>Subtype</label>
           <select id="subtype"></select>
         </div>
-        <div style="grid-column:span 3">
-          <label>Priority (Clawson)</label>
+      </div>
+
+      <div class="row">
+        <div style="grid-column:span 4">
+          <label>Priority</label>
           <select id="prio">
-            <option value="A">A — Alpha</option>
-            <option value="B">B — Bravo</option>
-            <option value="C">C — Charlie</option>
-            <option value="D">D — Delta</option>
-            <option value="E">E — Echo</option>
+            <option value="A">Alpha</option><option value="B">Bravo</option>
+            <option value="C">Charlie</option><option value="D">Delta</option><option value="E">Echo</option>
+          </select>
+        </div>
+        <div style="grid-column:span 4">
+          <label>Determinant</label>
+          <input id="det" readonly placeholder="NN-X-YY"/>
+        </div>
+        <div style="grid-column:span 4">
+          <label>Status</label>
+          <select id="status">
+            <option>Active</option><option>Holding</option><option>Cleared</option>
           </select>
         </div>
       </div>
@@ -96,450 +120,375 @@
       <div class="row">
         <div style="grid-column:span 6">
           <label>Location</label>
-          <input id="location" placeholder="215 Maple St" />
+          <input id="loc" placeholder="215 Maple St"/>
         </div>
         <div style="grid-column:span 3">
           <label>Cross</label>
-          <input id="cross" placeholder="@ Oak Ave" />
+          <input id="cross" placeholder="@ Oak Ave"/>
         </div>
         <div style="grid-column:span 3">
           <label>City</label>
-          <input id="city" value="Riverbend County" />
+          <input id="city" value="Riverbend County"/>
         </div>
       </div>
 
       <div class="row">
         <div style="grid-column:span 4">
           <label>Caller</label>
-          <input id="caller" placeholder="Name" />
+          <input id="caller" placeholder="Name"/>
         </div>
         <div style="grid-column:span 4">
-          <label>Callback #</label>
-          <input id="phone" placeholder="(555) 555-0155" />
+          <label>Callback</label>
+          <input id="phone" placeholder="(555) 555-0155"/>
         </div>
         <div style="grid-column:span 4">
-          <label>Assign Station</label>
-          <select id="station">
-            <option value="4" selected>Station 4 RBVFD</option>
-            <option value="3" disabled>Station 3 RBVFD (coming soon)</option>
+          <label>Apparatus (dropdown)</label>
+          <select id="apparatus">
+            <option value="">— Select Unit —</option>
+            <option>E4-1</option><option>T4</option><option>SQ4-2</option><option>T4-3</option><option>B4</option><option>QRV4</option><option>CAR4</option>
+            <option>Station 4</option>
+            <option>M101</option><option>M102</option><option>M103</option><option>M1</option><option>RSU</option>
           </select>
         </div>
       </div>
 
-      <!-- PROQA QUESTIONS (populate based on category/subtype) -->
+      <!-- PROQA: all dropdowns, live recode -->
       <div class="sep"></div>
-      <div id="questions" class="grid2"></div>
+      <div class="grid2" id="questionHost"></div>
 
       <div class="sep"></div>
       <label>Narrative</label>
-      <textarea id="narrative" placeholder="Auto-seeded from answers. You can edit."></textarea>
+      <textarea id="narr"></textarea>
 
-      <div class="sep"></div>
-      <div class="row">
-        <div style="grid-column:span 6">
-          <label>Computed Determinant</label>
-          <input id="determinant" readonly placeholder="NN-X-YY (auto)" />
-        </div>
-        <div style="grid-column:span 6;display:flex;gap:8px;align-items:end;justify-content:flex-end">
-          <button class="btn" id="seed">Seed Answers</button>
-          <button class="btn primary" id="compute">Compute Code</button>
-          <button class="btn warn" id="dispatch">Dispatch</button>
-          <button class="btn danger" id="clear">Clear</button>
-        </div>
-      </div>
-      <div class="note">Rules: Fire/Rescue/MVA → tone **Station** only (apparatus chosen by RBVFD). EMS E → add Station Assist. Overdose/Unconscious ≥ C → **Narcan Assist** (Station Assist). MVA flags (HV/Entrap/Pin-in/Rollover) → **Veh Acc w/ Rescue** + **RSU**.</div>
-    </div>
-  </section>
-
-  <!-- RIGHT: Log + Units -->
-  <section class="card">
-    <h3>Active Call Log</h3>
-    <div class="pad">
-      <div class="log" id="log"></div>
       <div class="sep"></div>
       <div class="grid2">
         <div>
-          <label>Bridge URL (Cloudflare Worker)</label>
-          <input id="bridgeUrl" placeholder="https://riverbend-bridge.YOURNAME.workers.dev" />
-          <div style="display:flex;gap:8px;margin-top:8px">
-            <button class="btn" id="toDiscord">Send / Update Discord</button>
-            <button class="btn" id="toRoblox">Send / Update Roblox</button>
-          </div>
+          <button class="btn" id="addUnit">Add Unit</button>
+          <button class="btn" id="clrStation">Clear Station Placeholder</button>
         </div>
-        <div>
-          <label>Discord Webhook (set in Worker)</label>
-          <input readonly value="(Configured in Worker, not here)" />
-          <div class="note">We relay via the Worker (safer, avoids CORS & hides token).</div>
+        <div style="display:flex;gap:8px;justify-content:flex-end">
+          <button class="btn warn" id="save">Save / Sync</button>
+          <button class="btn danger" id="close">Close Call</button>
         </div>
       </div>
-    </div>
-  </section>
 
-  <section class="card">
-    <h3>Units — Station & EMS (toggle OOS, click to advance status)</h3>
-    <div class="pad">
-      <div class="chips" id="unitPool"></div>
       <div class="sep"></div>
-      <button class="btn" id="oosFilter">Show OOS Only</button>
-      <button class="btn" id="allFilter">Show All</button>
+      <label>Assigned Units</label>
+      <div class="chips" id="unitChips"></div>
+
+      <div class="sep"></div>
+      <div class="note">
+        Rules: Fire/Rescue/Service → tone <b>Station</b> (apparatus chosen by RBVFD).  
+        EMS E → Station assist; Overdose/Unconscious ≥ C → <b>Narcan Assist</b>;  
+        MVC (High-Velocity / Entrapment / Pin-in / Rollover) → <b>Veh Acc w/ Rescue</b> + RSU.  
+        When a Station apparatus goes Dispatched/En Route, the <i>Station placeholder auto-clears</i>.
+      </div>
     </div>
   </section>
 </div>
 
 <script>
-/* ============ Minimal config (extend anytime) ============ */
-const STATION_LABELS = { "4":"Station 4 RBVFD", "3":"Station 3 RBVFD" };
-const EMS_UNITS = [
-  {id:'M101', name:'Medic 101 (ALS)'},
-  {id:'M102', name:'Medic 102 (BLS)'},
-  {id:'M103', name:'Medic 103 (BLS)'},
-  {id:'M1',   name:'Medic 1 (Supervisor)'},
-  {id:'RSU',  name:'Rescue Support Unit'}
-];
-const STA4_UNITS = [
-  {id:'E4-1', name:'Engine 4-1'},
-  {id:'SQ4-2',name:'Squad 4-2'},
-  {id:'T4-3', name:'Tanker 4-3'},
-  {id:'T4',  name:'Tower 4'},
-  {id:'B4',  name:'Brush 4'},
-  {id:'QRV4',name:'QRV 4'},
-  {id:'CAR4',name:'Car 4'}
-];
-const UNIT_LIST = [...EMS_UNITS, ...STA4_UNITS]; // add Station 3 later
-
-// Subtypes per category
+/* ========== basic config ========== */
+const BRIDGE = ""; // <— paste your Worker origin here (e.g., https://rivebendhook.vicanator423.workers.dev)
+const STATIONS = {"4":"Station 4 RBVFD","3":"Station 3 RBVFD"};
 const SUBTYPES = {
-  FIRE: ['Structure Fire','Vehicle Fire','Brush / Wildland','Alarm – Fire','Gas Leak / HazMat'],
-  EMS: ['Breathing Problems','Chest Pain','Cardiac Arrest','Overdose / Poisoning','Unconscious / Fainting','Seizure','Trauma','Stroke','Sick Person'],
-  RESCUE: ['MVC — Injury','MVC — High Velocity','MVC — Entrapment','MVC — Pin-in','MVC — Rollover','Technical Rescue'],
-  SERVICE: ['Public Assist','Investigation','Utility Problem','Standby']
+  FIRE:['Alarm – Fire','Structure Fire','Vehicle Fire','Brush / Wildland','Gas Leak / HazMat'],
+  EMS:['Breathing Problems','Chest Pain','Cardiac Arrest','Overdose / Poisoning','Unconscious / Fainting','Seizure','Trauma','Stroke','Sick Person'],
+  RESCUE:['MVC — Injury','MVC — High Velocity','MVC — Entrapment','MVC — Pin-in','MVC — Rollover','Technical Rescue'],
+  SERVICE:['Public Assist','Investigation','Utility Problem','Standby']
+};
+const PROQA = {
+  'Alarm – Fire':{
+    proto:'67', qs:{
+      'Smoke visible?':['No','Yes'],
+      'Flames visible?':['No','Yes'],
+      'Occupants inside?':['Unknown','No','Yes'],
+      'Building type':['SFD','Apartment','Commercial']
+    }, calc:(a)=> (a['Flames visible?']==='Yes'||a['Smoke visible?']==='Yes')?'D-02':'B-01'
+  },
+  'Structure Fire':{
+    proto:'67', qs:{
+      'Smoke visible?':['No','Light','Heavy'],
+      'Flames visible?':['No','Room','Multiple'],
+      'Occupants inside?':['Unknown','No','Yes']
+    }, calc:(a)=> (a['Flames visible?']!=='No'||a['Occupants inside?']==='Yes')?'D-02':'C-01'
+  },
+  'Vehicle Fire':{proto:'68', qs:{'Engine compartment?':['Unknown','No','Yes']}, calc:()=> 'C-01'},
+  'Brush / Wildland':{proto:'69', qs:{'Size estimate':['< 1 acre','~1 acre','> 1 acre']}, calc:(a)=> a['Size estimate']==='> 1 acre'?'D-02':'C-02'},
+  'Gas Leak / HazMat':{proto:'70', qs:{'Odor present?':['No','Yes'],'Evacuation?':['No','Yes']}, calc:(a)=> (a['Evacuation?']==='Yes'?'D-01':'C-01')},
+
+  'Overdose / Poisoning':{
+    proto:'23', qs:{
+      'Conscious?':['No','Yes'],
+      'Breathing normally?':['No','Yes'],
+      'Suspected opioid?':['Unknown','No','Yes'],
+      'Naloxone given?':['No','Yes']
+    }, calc:(a)=> a['Breathing normally?']==='No'?'E-01':(a['Conscious?']==='No'?'D-01':'C-01')},
+  'Unconscious / Fainting':{
+    proto:'31', qs:{'Responsive?':['No','Yes'],'Breathing normally?':['No','Yes']},
+    calc:(a)=> (a['Responsive?']==='No'&&a['Breathing normally?']==='No')?'E-01':(a['Responsive?']==='No'?'D-01':'C-01')
+  },
+  'Cardiac Arrest':{proto:'09', qs:{'CPR started?':['No','Yes'],'AED available?':['No','Yes']}, calc:()=> 'E-02'},
+  'Breathing Problems':{proto:'06', qs:{'Breathing normally?':['No','Yes']}, calc:(a)=> a['Breathing normally?']==='No'?'E-01':'C-02'},
+  'Chest Pain':{proto:'10', qs:{'Diaphoretic?':['No','Yes']}, calc:()=> 'C-01'},
+  'Seizure':{proto:'12', qs:{'Active now?':['No','Yes']}, calc:(a)=> a['Active now?']==='Yes'?'D-01':'C-01'},
+  'Trauma':{proto:'30', qs:{'Major bleeding?':['No','Yes']}, calc:(a)=> a['Major bleeding?']==='Yes'?'D-01':'C-02'},
+  'Stroke':{proto:'28', qs:{'FAST positive?':['No','Yes']}, calc:(a)=> a['FAST positive?']==='Yes'?'D-01':'C-01'},
+  'Sick Person':{proto:'26', qs:{'Severe symptoms?':['No','Yes']}, calc:(a)=> a['Severe symptoms?']==='Yes'?'C-01':'A-01'},
+
+  'MVC — Injury':{
+    proto:'32', qs:{
+      'Entrapment?':['No','Yes'],'Rollover?':['No','Yes'],'Pin-in?':['No','Yes'],'High velocity?':['No','Yes']
+    }, calc:(a)=> (['Yes','Yes','Yes','Yes'].some((v,i)=>Object.values(a)[i]==='Yes')?'D-01':'C-01')
+  },
+  'MVC — High Velocity':{proto:'32', qs:{}, calc:()=> 'D-01'},
+  'MVC — Entrapment':{proto:'32', qs:{}, calc:()=> 'D-01'},
+  'MVC — Pin-in':{proto:'32', qs:{}, calc:()=> 'D-01'},
+  'MVC — Rollover':{proto:'32', qs:{}, calc:()=> 'D-01'},
+
+  'Public Assist':{proto:'53', qs:{'Medical component?':['No','Yes']}, calc:(a)=> a['Medical component?']==='Yes'?'B-01':'A-01'},
+  'Investigation':{proto:'52', qs:{}, calc:()=> 'A-01'},
+  'Utility Problem':{proto:'54', qs:{'Active hazard?':['No','Yes']}, calc:(a)=> a['Active hazard?']==='Yes'?'C-01':'B-01'},
+  'Standby':{proto:'56', qs:{}, calc:()=> 'A-01'}
 };
 
-// Question banks (show on one screen). Keep 8–12; examples shown.
-const QUESTIONS = {
-  'Overdose / Poisoning': [
-    'Is the patient conscious?',
-    'Is the patient breathing normally?',
-    'Suspected opioid?',
-    'Naloxone available / given?',
-    'Approximate age?',
-    'Scene safe?',
-    'Number of patients?',
-    'Caller with patient?'
-  ],
-  'Unconscious / Fainting': [
-    'Is the patient responsive?',
-    'Is the patient breathing normally?',
-    'Is there major trauma?',
-    'Skin signs (pale/diaphoretic)?',
-    'Age?',
-    'History of similar?',
-    'Hazards on scene?',
-    'Caller with patient?'
-  ],
-  'Cardiac Arrest': [
-    'Breathing normally?',
-    'Conscious?',
-    'CPR started?',
-    'AED available?',
-    'Age?',
-    'Trauma involved?',
-    'Hazards?',
-    'Caller with patient?'
-  ],
-  'MVC — Injury': [
-    'Vehicles involved?',
-    'Estimated speed (mph)?',
-    'Airbags deployed?',
-    'Entrapment?',
-    'Rollover?',
-    'Pin-in?',
-    'Scene safe?',
-    'Patients count?'
-  ],
-  'Structure Fire': [
-    'Smoke or flames visible?',
-    'Occupants inside / unknown?',
-    'Building type (SFD/Apt/Comm)?',
-    'Power/gas hazards?',
-    'Exposure risk?',
-    'Time of day?',
-    'Caller location (inside/outside)?',
-    'Other hazards?'
-  ]
-};
+const STATUS_FLOW = ['DISPATCHED','ENROUTE','ONSCENE','TRANSPORT','RETURNING','CLEAR'];
+let ACTIVE = JSON.parse(localStorage.getItem('rb_active')||'[]'); // array of call objects
+function saveActive(){ localStorage.setItem('rb_active', JSON.stringify(ACTIVE)); }
 
-// Determinant map (simple examples; extend as needed)
-const PROTOCOLS = {
-  'Breathing Problems': {proto: '06', rules: (ans)=> ans['Is the patient breathing normally?']==='No' ? 'E-01' : 'C-02'},
-  'Cardiac Arrest':     {proto: '09', rules: (ans)=> 'E-02'},
-  'Overdose / Poisoning':{proto:'23', rules: (ans)=>{
-      if(ans['Is the patient conscious?']==='No') return 'D-01';
-      if(ans['Is the patient breathing normally?']==='No') return 'E-01';
-      return 'C-01';
-  }},
-  'Unconscious / Fainting':{proto:'31', rules:(ans)=>{
-      if(ans['Is the patient responsive?']==='No' && ans['Is the patient breathing normally?']==='No') return 'E-01';
-      if(ans['Is the patient responsive?']==='No') return 'D-01';
-      return 'C-01';
-  }},
-  'MVC — Injury':       {proto: '32', rules:(ans)=>{
-      if(['Yes','yes'].includes(ans['Entrapment?']) || ['Yes','yes'].includes(ans['Pin-in?']) || ['Yes','yes'].includes(ans['Rollover?'])) return 'D-01'; // Veh Acc w/ Rescue
-      const sp = parseInt(ans['Estimated speed (mph)?']||'0',10);
-      if(sp>=45) return 'D-01';
-      return 'C-01';
-  }},
-  'MVC — High Velocity':{proto: '32', rules:(_)=> 'D-01'},
-  'MVC — Entrapment':   {proto: '32', rules:(_)=> 'D-01'},
-  'MVC — Pin-in':       {proto: '32', rules:(_)=> 'D-01'},
-  'MVC — Rollover':     {proto: '32', rules:(_)=> 'D-01'},
-  'Structure Fire':     {proto: '67', rules:(ans)=> (ans['Smoke or flames visible?']==='Flames') ? 'D-02' : 'C-01'},
-  'Vehicle Fire':       {proto: '68', rules:(_)=> 'C-01'},
-  'Brush / Wildland':   {proto: '69', rules:(_)=> 'C-02'},
-  'Alarm – Fire':       {proto: '67', rules:(_)=> 'B-01'},
-  'Gas Leak / HazMat':  {proto: '70', rules:(_)=> 'D-01'},
-  'Seizure':            {proto: '12', rules:(_)=> 'C-01'},
-  'Chest Pain':         {proto: '10', rules:(_)=> 'C-01'},
-  'Sick Person':        {proto: '26', rules:(_)=> 'A-01'},
-  'Trauma':             {proto: '30', rules:(_)=> 'C-02'},
-  'Stroke':             {proto: '28', rules:(_)=> 'C-01'},
-  'Public Assist':      {proto: '53', rules:(_)=> 'A-01'},
-  'Investigation':      {proto: '52', rules:(_)=> 'A-01'},
-  'Utility Problem':    {proto: '54', rules:(_)=> 'B-01'},
-  'Standby':            {proto: '56', rules:(_)=> 'A-01'}
-};
+const $ = s=>document.querySelector(s);
+const nowZ=()=>new Date().toISOString().replace('T',' ').replace(/\.\d+Z$/,'Z');
+const pad=n=>String(n).padStart(4,'0');
+const nextCAD=()=>{let n=+localStorage.getItem('rbCadSeq')||0; n++; localStorage.setItem('rbCadSeq',n); return `RB-INC-${pad(n)}`;}
+const peekCAD=()=>`RB-INC-${pad(+localStorage.getItem('rbCadSeq')||0)}`;
+function tick(){ $('#clock').textContent=new Date().toUTCString().slice(17,25)+'Z';}
 
-/* ============ State ============ */
-const STATUS_FLOW = ['AVAILABLE','DISPATCHED','ENROUTE','ONSCENE','TRANSPORT','RETURNING','CLEAR','OOS'];
-let UNITS = {}; // id -> {name,state}
-let ANSWERS = {}; // question -> answer
-let CURRENT = null; // current call object
-let OOS_FILTER = false;
-
-/* ============ Helpers ============ */
-const $ = s => document.querySelector(s);
-const nowZ = () => new Date().toISOString().replace('T',' ').replace(/\.\d+Z$/,'Z');
-const pad = n => String(n).padStart(4,'0');
-const nextCAD = ()=>{ let n=+localStorage.getItem('rbCadSeq')||0; n++; localStorage.setItem('rbCadSeq',n); return `RB-INC-${pad(n)}`; };
-const peekCAD = ()=> `RB-INC-${pad(+localStorage.getItem('rbCadSeq')||0)}`;
-function log(t){ const L=$('#log'); L.textContent += (L.textContent?'\n':'') + `[${nowZ()}] ${t}`; $('#active').textContent='ACTIVE'; }
-
-/* ============ UI Build ============ */
-function buildSubtype(){
-  const cat=$('#category').value;
-  const list = SUBTYPES[cat] || [];
-  $('#subtype').innerHTML = list.map(v=>`<option>${v}</option>`).join('');
-  buildQuestions();
-}
-function buildQuestions(){
-  const type = $('#subtype').value;
-  const qs = QUESTIONS[type] || [];
-  const host = $('#questions'); host.innerHTML='';
-  // 8–12 on one screen; if fewer defined, we render what exists.
-  for(const q of qs){
-    const wrap=document.createElement('div');
-    wrap.innerHTML = `<label>${q}</label><input data-q="${q}" />`;
-    host.appendChild(wrap);
-  }
-}
-function readAnswers(){
-  ANSWERS={};
-  document.querySelectorAll('#questions [data-q]').forEach(inp=>{ ANSWERS[inp.dataset.q]=inp.value.trim(); });
-}
-function computeDeterminant(){
-  readAnswers();
-  const st = $('#subtype').value;
-  const base = PROTOCOLS[st];
-  let code = '??-?-??';
-  if(base){
-    const tail = base.rules(ANSWERS);      // e.g., 'D-01'
-    const letter = tail.split('-')[0];     // D
-    code = `${base.proto}-${letter}-${tail.split('-')[1]}`;
-    // Also set visible priority to the letter part so UI matches code
-    $('#prio').value = letter;
-  }
-  $('#determinant').value = code;
-  // Seed narrative quickly
-  if(!$('#narrative').value){
-    $('#narrative').value = `${st} coded ${code}. Caller: ${$('#caller').value||'Unknown'}. Key notes: ${Object.entries(ANSWERS).map(([k,v])=>`${k}=${v||'n/a'}`).join('; ')}`;
-  }
-  // Special logic hooks
-  const pr = $('#prio').value;
-  const cat = $('#category').value;
-  specialRules(cat, st, pr);
-}
-function specialRules(cat, subtype, prio){
-  // Narcan Assist: Overdose/Unconscious ≥ C
-  if ((subtype==='Overdose / Poisoning' || subtype==='Unconscious / Fainting') && ['C','D','E'].includes(prio)){
-    ensureStation(); // tone station
-    log(`STA-${$('#station').value} NARCAN ASSIST ALERT`);
-    CURRENT.flags.narcan = true;
-  }
-  // MVA/Rescue rules: tone station + EMS, RSU for HV/Entrap/Pin-in/Rollover, set Veh Acc w/ Rescue code
-  if ($('#category').value==='RESCUE'){
-    ensureStation();
-    ensureEMSBase();
-    if (['MVC — High Velocity','MVC — Entrapment','MVC — Pin-in','MVC — Rollover'].includes(subtype)){
-      CURRENT.flags.rescue=true;
-      CURRENT.units.add('RSU');
-      CURRENT.codeOverride = '32-D-01'; // Veh Acc w/ Rescue
-      $('#determinant').value = `32-D-01`;
-      $('#prio').value='D';
-      log(`RSU auto-added for ${subtype}`);
-    }
-  }
-  // EMS Echo: add Station Assist
-  if ($('#category').value==='EMS' && prio==='E'){
-    ensureStation(); CURRENT.flags.echoAssist=true;
-  }
-}
-function ensureStation(){
-  const st = $('#station').value;
-  const tag = `STATION-${st}`;
-  CURRENT.units.add(tag);
-  CURRENT.flags.station = true;
-}
-function ensureEMSBase(){
-  // default EMS recommendation: M101 (ALS) if free, else M102
-  CURRENT.units.add('M101');
-}
-
-/* ============ Units Board ============ */
-function loadUnits(){
-  UNITS = JSON.parse(localStorage.getItem('rbUnits')||'{}');
-  if(!Object.keys(UNITS).length){
-    for(const u of UNIT_LIST){ UNITS[u.id] = {name:u.name,state:'AVAILABLE'}; }
-    // Station placeholders (virtual "unit")
-    UNITS['STATION-4'] = {name:'Station 4 RBVFD', state:'AVAILABLE'};
-    // (Station 3 later) UNITS['STATION-3'] = {name:'Station 3 RBVFD', state:'AVAILABLE'};
-    saveUnits();
-  }
-}
-function saveUnits(){ localStorage.setItem('rbUnits', JSON.stringify(UNITS)); }
-function renderUnits(){
-  const pool = $('#unitPool'); pool.innerHTML='';
-  Object.entries(UNITS).forEach(([id,u])=>{
-    if(OOS_FILTER && u.state!=='OOS') return;
-    const chip=document.createElement('div');
-    chip.className='chip'; chip.dataset.id=id; chip.dataset.state=u.state;
-    chip.innerHTML = `<strong>${id}</strong><em>${u.name}</em>`;
-    chip.addEventListener('click', ()=>advanceUnit(id));
-    pool.appendChild(chip);
+/* ===== Call list UI ===== */
+let selected = null;
+function renderList(){
+  const host=$('#callList'); host.innerHTML='';
+  ACTIVE.filter(c=>c.status!=='Cleared').forEach(c=>{
+    const div=document.createElement('div'); div.className='call';
+    div.innerHTML = `<div class="code">${c.det} — ${c.subtype}</div>
+      <div class="mut">${c.cad} • ${STATIONS[c.station]} • ${c.location||''}</div>
+      <div class="bar ${c.prio}"></div>`;
+    div.onclick=()=>selectCall(c.cad);
+    host.appendChild(div);
   });
 }
-function advanceUnit(id){
-  const cur = UNITS[id].state;
-  const idx = STATUS_FLOW.indexOf(cur); 
-  const next = STATUS_FLOW[(idx+1) % STATUS_FLOW.length];
-  UNITS[id].state = next; saveUnits(); renderUnits();
-  log(`${id} → ${next}`);
-  // If a Station placeholder and any real STA unit goes out, auto-clear station
-  if(id.startsWith('STATION-')) return;
-  const st = $('#station').value;
-  const tag = `STATION-${st}`;
-  if (CURRENT && CURRENT.units.has(tag) && ['DISPATCHED','ENROUTE'].includes(next)){
-    CURRENT.units.delete(tag); log(`${STATION_LABELS[st]} placeholder cleared (apparatus responding)`);
+function selectCall(cad){
+  selected = ACTIVE.find(c=>c.cad===cad);
+  if(!selected) return;
+  $('#detailTitle').textContent = `Call Details — ${cad}`;
+  // fill fields
+  $('#cad').value = selected.cad;
+  $('#station').value = selected.station;
+  $('#category').value = selected.category;
+  buildSubtype();
+  $('#subtype').value = selected.subtype;
+  $('#prio').value = selected.prio;
+  $('#det').value = selected.det;
+  $('#status').value = selected.status||'Active';
+  $('#loc').value = selected.location||'';
+  $('#cross').value = selected.cross||'';
+  $('#city').value = selected.city||'Riverbend County';
+  $('#caller').value = selected.caller||'';
+  $('#phone').value = selected.phone||'';
+  $('#narr').value = selected.narrative||'';
+  renderQuestions();
+  // preload answers
+  for(const [k,v] of Object.entries(selected.answers||{})){
+    const el = document.querySelector(`[data-q="${k}"]`);
+    if(el){ el.value = v; }
   }
+  renderUnits();
 }
 
-/* ============ Call lifecycle ============ */
-function seed(){
-  const n1=['Alex','Taylor','Jordan','Riley','Casey','Morgan','Avery','Quinn','Blake','Reese'][Math.floor(Math.random()*10)];
-  const n2=['Miller','Johnson','Garcia','Brown','Davis','Lopez','Wilson','Anderson','Thomas','White'][Math.floor(Math.random()*10)];
-  $('#caller').value = `${n1} ${n2}`;
-  $('#phone').value = `(555) 4${Math.floor(10+Math.random()*90)}-${Math.floor(100+Math.random()*900)}${Math.floor(Math.random()*10)}${Math.floor(Math.random()*10)}`;
-  if(!$('#location').value) $('#location').value = `${100+Math.floor(Math.random()*800)} Maple St`;
+/* ===== subtype + questions ===== */
+function buildSubtype(){
+  const cat=$('#category').value; const list=SUBTYPES[cat]||[];
+  $('#subtype').innerHTML = list.map(s=>`<option>${s}</option>`).join('');
+  renderQuestions();
 }
-function startCall(){
-  CURRENT = {
-    cad: $('#cad').value || nextCAD(),
-    opened: nowZ(),
-    category: $('#category').value,
-    subtype: $('#subtype').value,
-    prio: $('#prio').value,
-    determinant: $('#determinant').value,
-    location: $('#location').value, cross: $('#cross').value, city: $('#city').value,
-    caller: $('#caller').value, phone: $('#phone').value,
-    station: $('#station').value,
-    units: new Set(),
-    flags: {narcan:false, rescue:false, echoAssist:false, station:false},
-    discordId: null
-  };
-  // Initial dispatch behavior
-  if (CURRENT.category==='FIRE' || CURRENT.category==='RESCUE' || CURRENT.category==='SERVICE'){
-    ensureStation();
-  } else if (CURRENT.category==='EMS') {
-    // EMS A–D = EMS only
-    ensureEMSBase();
+function renderQuestions(){
+  const st = $('#subtype').value;
+  const spec = PROQA[st]; const host=$('#questionHost'); host.innerHTML='';
+  if(!spec){ $('#det').value=''; return; }
+  for(const [q,opts] of Object.entries(spec.qs)){
+    const wrap=document.createElement('div');
+    wrap.innerHTML = `<label>${q}</label><select data-q="${q}">${opts.map(o=>`<option>${o}</option>`).join('')}</select>`;
+    host.appendChild(wrap);
   }
-  log(`${CURRENT.cad} OPENED by ${$('#dispName').textContent}`);
-  $('#cad').value = CURRENT.cad;
-  computeDeterminant(); // also applies special rules
-  summarizeUnits();
+  // attach change listeners to recalc
+  host.querySelectorAll('select').forEach(s=> s.onchange = autoCompute );
 }
-function summarizeUnits(){
-  const names=[...CURRENT.units].map(id=> UNITS[id]?.name || id);
-  log(`UNITS: ${names.join(', ')||'(pending)'}`);
-}
-function clearAll(){
-  if(!confirm('Clear screen?')) return;
-  CURRENT=null; $('#cad').value=peekCAD();
-  $('#log').textContent=''; $('#active').textContent='IDLE';
+function answersFromUI(){
+  const out={}; document.querySelectorAll('[data-q]').forEach(el=> out[el.dataset.q]=el.value );
+  return out;
 }
 
-/* ============ Bridge (Discord + Roblox via Worker) ============ */
-async function postToWorker(kind){
-  if(!CURRENT){ alert('Create/dispatch a call first.'); return; }
-  const url = $('#bridgeUrl').value.trim(); if(!url) return alert('Set Bridge URL.');
-  const payload = {
-    action: kind, // 'discord' or 'roblox'
-    call: {
-      cadNumber: CURRENT.cad,
-      station: CURRENT.station,
-      stationName: STATION_LABELS[CURRENT.station],
-      category: CURRENT.category,
-      subtype: CURRENT.subtype,
-      priority: $('#prio').value,
-      determinant: $('#determinant').value,
-      location: $('#location').value,
-      cross: $('#cross').value,
-      city: $('#city').value,
-      caller: $('#caller').value,
-      phone: $('#phone').value,
-      narrative: $('#narrative').value,
-      units: [...CURRENT.units],
-      flags: CURRENT.flags,
-      openedZulu: CURRENT.opened,
-      dispatcher: $('#dispName').textContent
+/* ===== auto compute & upgrade rules ===== */
+function autoCompute(){
+  if(!selected) return;
+  selected.answers = answersFromUI();
+  // compute determinant
+  const st = $('#subtype').value; const spec = PROQA[st];
+  if(spec){
+    const tail = spec.calc(selected.answers); // e.g., 'D-02'
+    const letter = tail.split('-')[0];
+    selected.det = `${spec.proto}-${tail}`;
+    selected.prio = letter;
+    $('#det').value = selected.det; $('#prio').value = selected.prio;
+  }
+  // upgrades / special logic
+  upgradeLogic();
+  // narcan / echo assist station tone
+  assistLogic();
+  saveActive(); renderList();
+}
+function upgradeLogic(){
+  const st = $('#subtype').value; const a = selected.answers||{};
+  // Alarm → Structure if smoke/flames
+  if(st==='Alarm – Fire' && (a['Smoke visible?']==='Yes' || a['Flames visible?']==='Yes')){
+    $('#subtype').value = 'Structure Fire';
+    selected.subtype = 'Structure Fire';
+    const spec = PROQA['Structure Fire']; const tail= spec.calc(a); selected.det=`${spec.proto}-${tail}`; selected.prio=tail.split('-')[0];
+    $('#det').value = selected.det; $('#prio').value=selected.prio;
+  }
+  // MVC base to Rescue if HV/Entrap/Pin-in/Rollover
+  if(st==='MVC — Injury'){
+    const hit = ['Entrapment?','Rollover?','Pin-in?','High velocity?'].some(k=> (selected.answers[k]||'No')==='Yes' );
+    if(hit){
+      selected.subtype = 'MVC — Entrapment';
+      $('#subtype').value = 'MVC — Entrapment';
+      selected.det = `32-D-01`; selected.prio='D'; $('#det').value=selected.det; $('#prio').value='D';
+      // ensure RSU present
+      selected.units = new Set(selected.units||[]);
+      selected.units.add('RSU');
     }
+  }
+}
+function assistLogic(){
+  const st = selected.subtype; const p = selected.prio;
+  selected.flags = selected.flags||{};
+  // Echo Assist (EMS E)
+  if(selected.category==='EMS' && p==='E'){
+    selected.flags.echoAssist = true;
+    addStationPlaceholder(selected.station);
+  }
+  // Narcan Assist (Overdose/Unconscious >= C)
+  if((st==='Overdose / Poisoning' || st==='Unconscious / Fainting') && ['C','D','E'].includes(p)){
+    selected.flags.narcan = true; addStationPlaceholder(selected.station);
+  }
+}
+function addStationPlaceholder(n){ if(!selected.units) selected.units = new Set(); selected.units.add(`Station ${n}`); }
+
+/* ===== units ===== */
+function renderUnits(){
+  const host=$('#unitChips'); host.innerHTML='';
+  const arr = Array.from(selected.units||[]);
+  arr.forEach(id=>{
+    const chip=document.createElement('div'); chip.className='chip';
+    chip.innerHTML = `<strong>${id}</strong>
+      <select data-unit="${id}">
+        ${STATUS_FLOW.map(s=>`<option>${s}</option>`).join('')}
+      </select>`;
+    host.appendChild(chip);
+  });
+  host.querySelectorAll('select').forEach(s=>{
+    s.onchange = (e)=>{
+      const id=e.target.dataset.unit; const st=e.target.value;
+      // when any Station apparatus goes EnRoute/Dispatched, clear station placeholder
+      if(!id.startsWith('Station') && (st==='DISPATCHED'||st==='ENROUTE')){
+        const tag = `Station ${selected.station}`;
+        if((selected.units||new Set()).has(tag)){
+          selected.units.delete(tag);
+        }
+      }
+      // auto sync after change
+      saveActive(); push('discord'); push('roblox');
+    }
+  });
+}
+
+/* ===== buttons ===== */
+$('#newCall').onclick = ()=>{
+  const cad = nextCAD();
+  const call = {
+    cad, station:'4', category:'FIRE', subtype:'Alarm – Fire', prio:'B', det:'67-B-01',
+    status:'Active', opened: nowZ(), location:'', cross:'', city:'Riverbend County',
+    caller:'', phone:'', narrative:'', answers:{}, units:new Set(['Station 4']), flags:{}, discordId:null
+  };
+  ACTIVE.unshift(call); saveActive(); renderList(); selectCall(cad);
+};
+$('#save').onclick = ()=>{
+  if(!selected) return;
+  // persist fields
+  selected.station = $('#station').value; selected.category=$('#category').value; selected.subtype=$('#subtype').value;
+  selected.prio=$('#prio').value; selected.det=$('#det').value; selected.status=$('#status').value;
+  selected.location=$('#loc').value; selected.cross=$('#cross').value; selected.city=$('#city').value;
+  selected.caller=$('#caller').value; selected.phone=$('#phone').value; selected.narrative=$('#narr').value;
+  saveActive(); renderList(); push('discord'); push('roblox');
+  alert('Saved & synced.');
+};
+$('#close').onclick = ()=>{
+  if(!selected) return;
+  selected.status='Cleared'; saveActive(); renderList(); push('discord'); push('roblox');
+  alert('Call cleared & synced.'); selectCall(selected.cad);
+};
+$('#addUnit').onclick = ()=>{
+  if(!selected) return;
+  const u = $('#apparatus').value.trim(); if(!u) return;
+  selected.units = new Set(selected.units||[]); selected.units.add(u);
+  saveActive(); renderUnits(); push('discord'); push('roblox');
+};
+$('#clrStation').onclick = ()=>{
+  if(!selected) return;
+  const tag=`Station ${selected.station}`;
+  if((selected.units||new Set()).has(tag)){ selected.units.delete(tag); saveActive(); renderUnits(); push('discord'); push('roblox'); }
+};
+$('#pushDiscord').onclick = ()=> push('discord');
+$('#pushRoblox').onclick = ()=> push('roblox');
+document.querySelector('header').ondblclick = ()=>{
+  const name = prompt('Dispatcher name:', localStorage.getItem('rbDisp')||'');
+  if(name){ localStorage.setItem('rbDisp',name); $('#disp').textContent=name; }
+};
+
+/* ===== live compute hooks ===== */
+$('#category').onchange = ()=>{ buildSubtype(); autoCompute(); };
+$('#subtype').onchange = ()=>{ renderQuestions(); autoCompute(); };
+
+/* ===== bridge ===== */
+async function push(kind){
+  if(!selected){ alert('Select a call first'); return; }
+  if(!BRIDGE){ alert('Set BRIDGE URL at top of file.'); return; }
+  const payload = {
+    action: kind, call: serializable(selected)
   };
   try{
-    const r = await fetch(url+'/upsert', {method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(payload)});
-    const j = await r.json();
-    if(j.discordId) CURRENT.discordId = j.discordId;
-    alert((kind==='discord'?'Discord':'Roblox')+' updated.');
-  }catch(e){ alert('Worker error. Check URL.'); }
+    const r = await fetch(BRIDGE+'/upsert',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(payload)});
+    await r.json();
+  }catch(e){ console.warn('Bridge error', e); }
+}
+function serializable(c){
+  return {
+    cadNumber:c.cad, station:c.station, stationName:STATIONS[c.station],
+    category:c.category, subtype:c.subtype, priority:c.prio, determinant:c.det,
+    status:c.status, openedZulu:c.opened,
+    location:c.location, cross:c.cross, city:c.city,
+    caller:c.caller, phone:c.phone, narrative:c.narrative,
+    answers:c.answers, units:Array.from(c.units||[]), flags:c.flags,
+    dispatcher: (localStorage.getItem('rbDisp')||'Unknown')
+  };
 }
 
-/* ============ Init ============ */
-function tick(){ $('#clock').textContent = new Date().toUTCString().slice(17,25) + 'Z'; }
-function setDisp(){ const n=prompt('Dispatcher name:', localStorage.getItem('rbDisp')||''); if(n){localStorage.setItem('rbDisp',n); $('#dispName').textContent=n;} }
+/* ===== init ===== */
 function init(){
-  $('#dispName').textContent = localStorage.getItem('rbDisp')||'Unknown';
-  $('#cad').value = peekCAD()==='RB-INC-0000'?nextCAD():peekCAD();
-  loadUnits(); renderUnits();
-  $('#category').addEventListener('change', buildSubtype);
-  $('#subtype').addEventListener('change', buildQuestions);
-  $('#compute').addEventListener('click', computeDeterminant);
-  $('#seed').addEventListener('click', seed);
-  $('#dispatch').addEventListener('click', ()=>{ if(!CURRENT) startCall(); else computeDeterminant(); summarizeUnits(); });
-  $('#clear').addEventListener('click', clearAll);
-  $('#oosFilter').addEventListener('click', ()=>{ OOS_FILTER=true; renderUnits(); });
-  $('#allFilter').addEventListener('click', ()=>{ OOS_FILTER=false; renderUnits(); });
-  document.querySelector('header').addEventListener('dblclick', setDisp);
-  $('#toDiscord').addEventListener('click', ()=>postToWorker('discord'));
-  $('#toRoblox').addEventListener('click', ()=>postToWorker('roblox'));
-  buildSubtype(); tick(); setInterval(tick,1000);
+  $('#disp').textContent = localStorage.getItem('rbDisp')||'Unknown';
+  if(!ACTIVE.length){ // seed list with last CAD for UI continuity
+    $('#cad').value = peekCAD()==='RB-INC-0000'?nextCAD():peekCAD();
+  }
+  buildSubtype(); renderList(); tick(); setInterval(tick,1000);
 }
 document.addEventListener('DOMContentLoaded', init);
 </script>
