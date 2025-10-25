@@ -555,13 +555,15 @@ function renderUnits(){
     chip.innerHTML=`<strong>${id}</strong><select data-unit="${id}">${STATUS_FLOW.map(s=>`<option>${s}</option>`).join("")}</select>`;
     host.appendChild(chip);
   });
-  host.querySelectorAll("select").forEach(s=>s.onchange=e=>{
-    const id=e.target.dataset.unit; const st=e.target.value;
-    if(!id.startsWith("Station")&&(st==="DISPATCHED"||st==="ENROUTE")){
-      const tag=`Station ${selected.station}`; if(selected.units.has(tag))selected.units.delete(tag);
-    }
-    saveActive(); push("discord"); push("roblox");
-  });
+ host.querySelectorAll("select").forEach(s=>s.onchange=e=>{
+  const id = e.target.dataset.unit;
+  const st = e.target.value;
+  if (!id.startsWith("Station") && (st === "DISPATCHED" || st === "ENROUTE")) {
+    const tag = `Station ${selected.station}`;
+    if (selected.units.has(tag)) selected.units.delete(tag);
+  }
+  saveActive(); // no automatic push here
+});
 }
 
 /* ---------- BUTTONS ---------- */
@@ -590,7 +592,10 @@ $("#close").onclick=()=>{
 $("#addUnit").onclick=()=>{
   if(!selected)return;
   const u=$("#apparatus").value.trim(); if(!u)return;
-  selected.units.add(u); saveActive(); renderUnits(); push("discord"); push("roblox");
+ selected.units.add(u);
+saveActive();
+renderUnits();
+toast("Unit added.");
 };
 $("#clrStation").onclick=()=>{
   if(!selected)return; const tag=`Station ${selected.station}`;
