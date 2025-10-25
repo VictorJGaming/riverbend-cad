@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Riverbend CAD / PROQA v7.0 — Stations 4 & 3 (RBVFD)</title>
+<style>
+/* =========================
+   RIVERBEND CAD / PROQA v7.0
+   ========================= */
+
+/* ---- Color System ---- */
+:root{
+  --bg:#0b0d12;
+  --card:#141826;
+  --ink:#e9f7ef;
+  --mut:#9fb8c2;
+  --line:#20263a;
+  --accent:#2ecc71;
+  --warn:#e67e22;
+  --err:#e74c3c;
+  --priA:#2ecc71;
+  --priB:#1abc9c;
+  --priC:#f1c40f;
+  --priD:#e67e22;
+  --priE:#e74c3c;
+  --font:14px/1.5 "Segoe UI",system-ui,Arial,sans-serif;
+}
+
+*{box-sizing:border-box;user-select:none}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font:var(--font);
+  overflow:hidden;
+}
+
+/* ---- Header ---- */
+header{
+  display:flex;align-items:center;gap:12px;
+  padding:12px 16px;
+  background:linear-gradient(135deg,#10131e,#0c0f18);
+  border-bottom:1px solid var(--line);
+  box-shadow:0 2px 8px rgba(0,0,0,.4);
+}
+header h1{font-size:17px;margin:0;font-weight:600}
+header .sub{font-size:12px;color:var(--mut);margin-top:2px}
+header .status{margin-left:auto;display:flex;gap:8px;align-items:center}
+.pill{
+  padding:6px 12px;
+  background:#10141e;
+  border:1px solid var(--line);
+  border-radius:999px;
+  font-size:12px;color:var(--mut);
+}
+
+/* ---- Layout ---- */
+.wrap{
+  display:grid;
+  grid-template-columns:360px 1fr;
+  gap:16px;
+  height:calc(100vh - 60px);
+  padding:14px;
+}
+
+/* ---- Cards ---- */
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:12px;
+  box-shadow:0 6px 22px rgba(0,0,0,.35);
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+}
+.card h3{
+  margin:0;padding:10px 12px;
+  background:#121522;
+  color:#cfeee0;
+  font-size:13px;text-transform:uppercase;letter-spacing:.5px;
+  border-bottom:1px solid var(--line);
+}
+.pad{padding:12px;overflow:auto;flex:1}
+
+/* ---- Buttons ---- */
+.btn{
+  cursor:pointer;
+  transition:.15s ease;
+  border-radius:8px;
+  border:1px solid var(--line);
+  background:#10141f;
+  color:var(--ink);
+  padding:8px 10px;
+  font:inherit;
+}
+.btn:hover{transform:translateY(-1px)}
+.btn.primary{background:#132417;border-color:#2ecc71}
+.btn.warn{background:#241d10;border-color:var(--warn)}
+.btn.danger{background:#241010;border-color:var(--err)}
+
+/* ---- Inputs ---- */
+input,select,textarea{
+  width:100%;
+  border:1px solid #2a3150;
+  border-radius:8px;
+  background:#0f1220;
+  color:var(--ink);
+  padding:8px 10px;
+  font:inherit;
+}
+label{display:block;margin:6px 0 3px;font-size:12px;color:var(--mut)}
+textarea{min-height:90px;resize:vertical}
+
+/* ---- Active Call List ---- */
+.call{
+  border-bottom:1px solid #1f2440;
+  padding:8px 10px;
+  cursor:pointer;
+}
+.call:hover{background:#101426}
+.call .code{font-weight:600}
+.call .mut{color:var(--mut);font-size:12px}
+.bar{height:3px;background:#333;margin-top:3px;border-radius:3px}
+.bar.A{background:var(--priA)}
+.bar.B{background:var(--priB)}
+.bar.C{background:var(--priC)}
+.bar.D{background:var(--priD)}
+.bar.E{background:var(--priE)}
+
+/* ---- Chips / Units ---- */
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{
+  background:#0f1220;
+  border:1px solid #2a2e47;
+  border-radius:999px;
+  padding:6px 10px;
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+.chip select{width:auto}
+
+/* ---- Notes / Separators ---- */
+.sep{height:1px;margin:10px 0;background:linear-gradient(90deg,transparent,#232840,transparent)}
+.note{font-size:12px;color:#97a5bd}
+
+/* ---- Flash Animation ---- */
+@keyframes flashUp{
+  0%{box-shadow:0 0 0 rgba(0,0,0,0)}
+  25%{box-shadow:0 0 20px var(--priE)}
+  50%{box-shadow:0 0 12px var(--priE)}
+  100%{box-shadow:0 0 0 rgba(0,0,0,0)}
+}
+.flash-upgrade{animation:flashUp 1s ease}
+
+/* ---- Audit Log ---- */
+.auditlog{
+  font-size:12px;
+  border-top:1px solid var(--line);
+  margin-top:8px;
+  padding-top:8px;
+  max-height:120px;
+  overflow:auto;
+}
+.auditlog div{margin-bottom:3px;color:var(--mut)}
+.auditlog time{color:#6ddfb7;margin-right:6px}
+
+/* ---- Toast ---- */
+.toast{
+  position:fixed;bottom:14px;right:14px;
+  background:#12171f;
+  border:1px solid var(--line);
+  border-radius:8px;
+  padding:10px 16px;
+  color:var(--ink);
+  box-shadow:0 6px 16px rgba(0,0,0,.4);
+  opacity:0;pointer-events:none;
+  transition:.3s opacity ease;
+}
+.toast.show{opacity:1;pointer-events:auto}
+
+/* ---- Grid Helpers ---- */
+.row{display:grid;grid-template-columns:repeat(12,1fr);gap:10px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.list{overflow:auto;max-height:70vh}
+</style>
+</head>
+<body>
+<header>
+  <div style="width:36px;height:36px;border:1px solid var(--line);border-radius:8px;background:linear-gradient(135deg,#1a1d2d,#10121c)"></div>
+  <div>
+    <h1>Riverbend CAD / PROQA v7.0 — Stations 4 & 3 (RBVFD)</h1>
+    <div class="sub">Multi-call • Dropdown PROQA • Smart Narrative • Discord + Roblox Sync</div>
+  </div>
+  <div class="status">
+    <div class="pill">Dispatcher: <span id="disp">Unknown</span></div>
+    <div class="pill" id="clock">--:--:--Z</div>
+  </div>
+</header>
+
+<div class="wrap">
+  <!-- LEFT: Active Calls -->
+  <section class="card" id="left">
+    <h3>Active Calls</h3>
+    <div class="pad">
+      <div class="row">
+        <div style="grid-column:span 6"><button class="btn primary" id="newCall">New Call</button></div>
+        <div style="grid-column:span 6;display:flex;gap:8px;justify-content:flex-end">
+          <button class="btn" id="pushDiscord">Push Discord</button>
+          <button class="btn" id="pushRoblox">Push Roblox</button>
+        </div>
+      </div>
+      <div id="callList" class="list"></div>
+    </div>
+  </section>
+
+  <!-- RIGHT: Call Editor -->
+  <section class="card" id="right">
+    <h3 id="detailTitle">Call Details</h3>
+    <div class="pad">
+      <div class="row">
+        <div style="grid-column:span 3">
+          <label>CAD #</label>
+          <input id="cad" readonly/>
+        </div>
+        <div style="grid-column:span 3">
+          <label>Station</label>
+          <select id="station">
+            <option value="4">Station 4 RBVFD</option>
+            <option value="3" disabled>Station 3 RBVFD (later)</option>
+          </select>
+        </div>
+        <div style="grid-column:span 3">
+          <label>Category</label>
+          <select id="category">
+            <option value="FIRE">🔥 Fire</option>
+            <option value="EMS">🚑 EMS</option>
+            <option value="RESCUE">🚒 Rescue / MVA</option>
+            <option value="SERVICE">⚙️ Service</option>
+          </select>
+        </div>
+        <div style="grid-column:span 3">
+          <label>Subtype</label>
+          <select id="subtype"></select>
+        </div>
+      </div>
+
+      <div class="row">
+        <div style="grid-column:span 4">
+          <label>Priority</label>
+          <select id="prio">
+            <option>A</option><option>B</option><option>C</option><option>D</option><option>E</option>
+          </select>
+        </div>
+        <div style="grid-column:span 4">
+          <label>Determinant</label>
+          <input id="det" readonly placeholder="NN-X-YY"/>
+        </div>
+        <div style="grid-column:span 4">
+          <label>Status</label>
+          <select id="status"><option>Active</option><option>Holding</option><option>Cleared</option></select>
+        </div>
+      </div>
+
+      <div class="row">
+        <div style="grid-column:span 6">
+          <label>Location</label>
+          <input id="loc" placeholder="215 Maple St"/>
+        </div>
+        <div style="grid-column:span 3">
+          <label>Cross</label>
+          <input id="cross" placeholder="@ Oak Ave"/>
+        </div>
+        <div style="grid-column:span 3">
+          <label>City</label>
+          <input id="city" value="Riverbend County"/>
+        </div>
+      </div>
+
+      <div class="row">
+        <div style="grid-column:span 4"><label>Caller</label><input id="caller" placeholder="Name"/></div>
+        <div style="grid-column:span 4"><label>Callback</label><input id="phone" placeholder="(555) 555-0155"/></div>
+        <div style="grid-column:span 4">
+          <label>Apparatus (dropdown)</label>
+          <select id="apparatus">
+            <option value="">— Select Unit —</option>
+            <option>E4-1</option><option>T4</option><option>SQ4-2</option><option>T4-3</option>
+            <option>B4</option><option>QRV4</option><option>CAR4</option><option>Station 4</option>
+            <option>M101</option><option>M102</option><option>M103</option><option>M1</option><option>RSU</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="sep"></div>
+      <div class="grid2" id="questionHost"></div>
+      <div class="sep"></div>
+      <label>Narrative</label>
+      <textarea id="narr"></textarea>
+      <div class="sep"></div>
+      <div class="grid2">
+        <div>
+          <button class="btn" id="addUnit">Add Unit</button>
+          <button class="btn" id="clrStation">Clear Station Placeholder</button>
+        </div>
+        <div style="display:flex;gap:8px;justify-content:flex-end">
+          <button class="btn warn" id="save">Save / Sync</button>
+          <button class="btn danger" id="close">Clear Call</button>
+        </div>
+      </div>
+      <div class="sep"></div>
+      <label>Assigned Units</label>
+      <div class="chips" id="unitChips"></div>
+      <div class="sep"></div>
+      <div class="note">
+        Fire / Rescue / Service → tone <b>Station</b> (apparatus chosen by RBVFD).  
+        EMS E → Station assist; Overdose / Unconscious ≥ C → <b>Narcan Assist</b>;  
+        MVC (High Velocity / Entrapment / Pin-in / Rollover) → <b>Veh Acc w/ Rescue</b> + RSU.  
+      </div>
+
+      <div class="auditlog" id="auditLog"></div>
+    </div><!-- end .pad -->
+  </section>
+</div>
+
+<script>
+/* ===========================
+   CORE CONFIG + DATA TABLES
+   =========================== */
+const BRIDGE="https://rivebendhook.vicanator423.workers.dev";
+const STATIONS={"4":"Station 4 RBVFD","3":"Station 3 RBVFD"};
+const STATUS_FLOW=["DISPATCHED","ENROUTE","ONSCENE","TRANSPORT","RETURNING","CLEAR"];
+
+const SUBTYPES={
+ FIRE:['Alarm – Fire','Structure Fire','Vehicle Fire','Brush / Wildland','Gas Leak / HazMat'],
+ EMS:['Breathing Problems','Chest Pain','Cardiac Arrest','Overdose / Poisoning','Unconscious / Fainting','Seizure','Trauma','Stroke','Sick Person'],
+ RESCUE:['MVC – Injury','MVC – High Velocity','MVC – Entrapment','MVC – Pin-in','MVC – Rollover','Technical Rescue'],
+ SERVICE:['Public Assist','Investigation','Utility Problem','Standby']
+};
+
+/* ---- PROQA Definition ---- */
+const PROQA={
+  'Alarm – Fire':{proto:'67',qs:{'Smoke visible?':['No','Yes'],'Flames visible?':['No','Yes'],'Occupants inside?':['Unknown','No','Yes']},calc:a=>(a['Smoke visible?']==='Yes'||a['Flames visible?']==='Yes')?'D-02':'B-01'},
+  'Structure Fire':{proto:'67',qs:{'Flames visible?':['No','Room','Multiple'],'Occupants inside?':['Unknown','No','Yes']},calc:a=>(a['Flames visible?']!=='No'||a['Occupants inside?']==='Yes')?'D-02':'C-01'},
+  'Vehicle Fire':{proto:'68',qs:{'Engine compartment?':['Unknown','No','Yes']},calc:()=> 'C-01'},
+  'Brush / Wildland':{proto:'69',qs:{'Size estimate':['< 1 acre','~1 acre','> 1 acre']},calc:a=>a['Size estimate']==='> 1 acre'?'D-02':'C-02'},
+  'Gas Leak / HazMat':{proto:'70',qs:{'Odor present?':['No','Yes'],'Evacuation?':['No','Yes']},calc:a=>(a['Evacuation?']==='Yes')?'D-01':'C-01'},
+
+  'Overdose / Poisoning':{proto:'23',qs:{'Conscious?':['No','Yes'],'Breathing normally?':['No','Yes'],'Suspected opioid?':['Unknown','No','Yes'],'Naloxone given?':['No','Yes']},
+     calc:a=>a['Breathing normally?']==='No'?'E-01':(a['Conscious?']==='No'?'D-01':'C-01')},
+  'Unconscious / Fainting':{proto:'31',qs:{'Responsive?':['No','Yes'],'Breathing normally?':['No','Yes']},
+     calc:a=>(a['Responsive?']==='No'&&a['Breathing normally?']==='No')?'E-01':(a['Responsive?']==='No'?'D-01':'C-01')},
+  'Cardiac Arrest':{proto:'09',qs:{'CPR started?':['No','Yes'],'AED available?':['No','Yes']},calc:()=> 'E-02'},
+  'Breathing Problems':{proto:'06',qs:{'Breathing normally?':['No','Yes']},calc:a=>a['Breathing normally?']==='No'?'E-01':'C-02'},
+  'Chest Pain':{proto:'10',qs:{'Diaphoretic?':['No','Yes']},calc:()=> 'C-01'},
+  'Seizure':{proto:'12',qs:{'Active now?':['No','Yes']},calc:a=>a['Active now?']==='Yes'?'D-01':'C-01'},
+  'Trauma':{proto:'30',qs:{'Major bleeding?':['No','Yes']},calc:a=>a['Major bleeding?']==='Yes'?'D-01':'C-02'},
+  'Stroke':{proto:'28',qs:{'FAST positive?':['No','Yes']},calc:a=>a['FAST positive?']==='Yes'?'D-01':'C-01'},
+  'Sick Person':{proto:'26',qs:{'Severe symptoms?':['No','Yes']},calc:a=>a['Severe symptoms?']==='Yes'?'C-01':'A-01'},
+
+  'MVC – Injury':{proto:'32',qs:{'Entrapment?':['No','Yes'],'Rollover?':['No','Yes'],'Pin-in?':['No','Yes'],'High velocity?':['No','Yes']},
+     calc:a=>Object.values(a).includes('Yes')?'D-01':'C-01'},
+  'MVC – Entrapment':{proto:'32',qs:{},calc:()=> 'D-01'},
+  'MVC – High Velocity':{proto:'32',qs:{},calc:()=> 'D-01'},
+  'MVC – Pin-in':{proto:'32',qs:{},calc:()=> 'D-01'},
+  'MVC – Rollover':{proto:'32',qs:{},calc:()=> 'D-01'},
+
+  'Public Assist':{proto:'53',qs:{'Medical component?':['No','Yes']},calc:a=>a['Medical component?']==='Yes'?'B-01':'A-01'},
+  'Investigation':{proto:'52',qs:{},calc:()=> 'A-01'},
+  'Utility Problem':{proto:'54',qs:{'Active hazard?':['No','Yes']},calc:a=>a['Active hazard?']==='Yes'?'C-01':'B-01'},
+  'Standby':{proto:'56',qs:{},calc:()=> 'A-01'}
+};
+
+/* ---------- SMART NARRATIVE ENGINE ---------- */
+function generateNarrative(c){
+  let t=`${STATIONS[c.station]} dispatched for a reported ${c.subtype}`;
+  if(c.det) t+=` (${c.det})`;
+  if(c.location) t+=` at ${c.location}`;
+  if(c.cross) t+=` ${c.cross}`;
+  if(c.answers){
+    const hints=[];
+    for(const [k,v] of Object.entries(c.answers)) if(v!=='No'&&v!=='Unknown')hints.push(`${k.replaceAll(' ',' ')}: ${v}`);
+    if(hints.length) t+=`. Notes: ${hints.join(', ')}`;
+  }
+  if(c.units&&c.units.size) t+=`. Units: ${Array.from(c.units).join(', ')}.`;
+  return t;
+}
+/* ===========================
+   CORE STATE + UTILITIES
+   =========================== */
+const $ = s => document.querySelector(s);
+const nowZ = () => new Date().toISOString().replace("T"," ").replace(/\.\d+Z$/,"Z");
+const pad = n => String(n).padStart(4,"0");
+const nextCAD = () => { let n = +localStorage.getItem("rbCadSeq")||0; n++; localStorage.setItem("rbCadSeq",n); return `RB-INC-${pad(n)}`; };
+const peekCAD = () => `RB-INC-${pad(+localStorage.getItem("rbCadSeq")||0)}`;
+let ACTIVE = JSON.parse(localStorage.getItem("rb_active")||"[]");
+function saveActive(){ localStorage.setItem("rb_active",JSON.stringify(ACTIVE)); }
+
+let selected = null;
+function toast(msg){
+  let el=document.querySelector(".toast");
+  if(!el){ el=document.createElement("div"); el.className="toast"; document.body.appendChild(el);}
+  el.textContent=msg; el.classList.add("show");
+  setTimeout(()=>el.classList.remove("show"),2500);
+}
+
+/* ---------- RENDER ACTIVE CALL LIST ---------- */
+function renderList(){
+  const host=$("#callList"); host.innerHTML="";
+  ACTIVE.filter(c=>c.status!=="Cleared").forEach(c=>{
+    const div=document.createElement("div"); div.className="call";
+    div.innerHTML=`<div class="code">${c.det||""} — ${c.subtype}</div>
+      <div class="mut">${c.cad} • ${STATIONS[c.station]} • ${c.location||""}</div>
+      <div class="bar ${c.prio||"A"}"></div>`;
+    div.onclick=()=>selectCall(c.cad);
+    host.appendChild(div);
+  });
+}
+
+/* ---------- SELECT + POPULATE ---------- */
+function selectCall(cad){
+  selected=ACTIVE.find(c=>c.cad===cad);
+  if(!selected)return;
+  $("#detailTitle").textContent=`Call Details — ${cad}`;
+  $("#cad").value=cad;
+  $("#station").value=selected.station;
+  $("#category").value=selected.category;
+  buildSubtype();
+  $("#subtype").value=selected.subtype;
+  $("#prio").value=selected.prio;
+  $("#det").value=selected.det;
+  $("#status").value=selected.status;
+  $("#loc").value=selected.location||"";
+  $("#cross").value=selected.cross||"";
+  $("#city").value=selected.city||"Riverbend County";
+  $("#caller").value=selected.caller||"";
+  $("#phone").value=selected.phone||"";
+  $("#narr").value=selected.narrative||"";
+  renderQuestions();
+  for(const[k,v]of Object.entries(selected.answers||{})){const el=document.querySelector(`[data-q="${k}"]`);if(el)el.value=v;}
+  renderUnits();loadAudit(cad);
+}
+
+/* ---------- SUBTYPE & QUESTIONS ---------- */
+function buildSubtype(){
+  const cat = $("#category").value;
+  const list = SUBTYPES[cat] || [];
+  const subtypeEl = $("#subtype");
+
+  subtypeEl.innerHTML = "";
+  if (!list.length) {
+    subtypeEl.innerHTML = "<option disabled selected>No subtypes available</option>";
+    return;
+  }
+
+  list.forEach(sub => {
+    const opt = document.createElement("option");
+    opt.value = sub;
+    opt.textContent = sub;
+    subtypeEl.appendChild(opt);
+  });
+
+  // Set the current subtype for continuity
+  if (selected && list.includes(selected.subtype)) {
+    subtypeEl.value = selected.subtype;
+  } else {
+    subtypeEl.value = list[0];
+    if (selected) selected.subtype = list[0];
+  }
+
+  renderQuestions();
+}
+function renderQuestions(){
+  const st=$("#subtype").value; const spec=PROQA[st]; const host=$("#questionHost"); host.innerHTML="";
+  if(!spec){$("#det").value="";return;}
+  for(const[q,opts]of Object.entries(spec.qs)){
+    const w=document.createElement("div");
+    w.innerHTML=`<label>${q}</label><select data-q="${q}">${opts.map(o=>`<option>${o}</option>`).join("")}</select>`;
+    host.appendChild(w);
+  }
+  host.querySelectorAll("select").forEach(s=>s.onchange=autoCompute);
+}
+function answersFromUI(){
+  const o={}; document.querySelectorAll("[data-q]").forEach(el=>o[el.dataset.q]=el.value);
+  return o;
+}
+
+/* ---------- AUTO COMPUTE ---------- */
+function autoCompute(){
+  if(!selected)return;
+  selected.answers=answersFromUI();
+  const st=$("#subtype").value; const spec=PROQA[st];
+  if(spec){ const tail=spec.calc(selected.answers); const letter=tail.split("-")[0];
+    selected.det=`${spec.proto}-${tail}`; selected.prio=letter;
+    $("#det").value=selected.det; $("#prio").value=letter;
+  }
+  upgradeLogic(); assistLogic();
+  selected.narrative=generateNarrative(selected);
+  $("#narr").value=selected.narrative;
+  saveActive(); renderList();
+}
+
+/* ---------- UPGRADE & ASSIST ---------- */
+function upgradeLogic(){
+  const st=$("#subtype").value; const a=selected.answers||{};
+  if(st==="Alarm – Fire"&&(a["Smoke visible?"]==="Yes"||a["Flames visible?"]==="Yes")){
+    selected.subtype="Structure Fire"; $("#subtype").value="Structure Fire";
+    const spec=PROQA["Structure Fire"]; const tail=spec.calc(a);
+    selected.det=`${spec.proto}-${tail}`; selected.prio=tail.split("-")[0];
+    $("#det").value=selected.det; $("#prio").value=selected.prio;
+    $("#right").classList.add("flash-upgrade"); setTimeout(()=>$("#right").classList.remove("flash-upgrade"),1000);
+  }
+  if(st==="MVC – Injury"){
+    if(Object.values(a).includes("Yes")){
+      selected.subtype="MVC – Entrapment"; $("#subtype").value="MVC – Entrapment";
+      selected.det="32-D-01"; selected.prio="D";
+      selected.units.add("RSU");
+    }
+  }
+}
+function assistLogic(){
+  const st=selected.subtype; const p=selected.prio;
+  selected.flags=selected.flags||{};
+  if(selected.category==="EMS"&&p==="E"){selected.flags.echoAssist=true;addStationPlaceholder(selected.station);}
+  if((st==="Overdose / Poisoning"||st==="Unconscious / Fainting")&&["C","D","E"].includes(p)){
+    selected.flags.narcan=true;addStationPlaceholder(selected.station);
+  }
+}
+function addStationPlaceholder(n){if(!selected.units)selected.units=new Set();selected.units.add(`Station ${n}`);}
+
+/* ---------- UNITS ---------- */
+function renderUnits(){
+  const host=$("#unitChips"); host.innerHTML="";
+  const arr=Array.from(selected.units||[]);
+  arr.forEach(id=>{
+    const chip=document.createElement("div"); chip.className="chip";
+    chip.innerHTML=`<strong>${id}</strong><select data-unit="${id}">${STATUS_FLOW.map(s=>`<option>${s}</option>`).join("")}</select>`;
+    host.appendChild(chip);
+  });
+  host.querySelectorAll("select").forEach(s=>s.onchange=e=>{
+    const id=e.target.dataset.unit; const st=e.target.value;
+    if(!id.startsWith("Station")&&(st==="DISPATCHED"||st==="ENROUTE")){
+      const tag=`Station ${selected.station}`; if(selected.units.has(tag))selected.units.delete(tag);
+    }
+    saveActive(); push("discord"); push("roblox");
+  });
+}
+
+/* ---------- BUTTONS ---------- */
+$("#newCall").onclick=()=>{
+  const cad=nextCAD();
+  const c={cad,station:"4",category:"FIRE",subtype:"Alarm – Fire",prio:"B",det:"67-B-01",
+    status:"Active",opened:nowZ(),location:"",cross:"",city:"Riverbend County",
+    caller:"",phone:"",answers:{},units:new Set(["Station 4"]),flags:{},discordId:null,narrative:""};
+  ACTIVE.unshift(c); saveActive(); renderList(); selectCall(cad);
+};
+$("#save").onclick=()=>{
+  if(!selected)return;
+  selected.station=$("#station").value; selected.category=$("#category").value; selected.subtype=$("#subtype").value;
+  selected.prio=$("#prio").value; selected.det=$("#det").value; selected.status=$("#status").value;
+  selected.location=$("#loc").value; selected.cross=$("#cross").value; selected.city=$("#city").value;
+  selected.caller=$("#caller").value; selected.phone=$("#phone").value;
+  selected.narrative=$("#narr").value||generateNarrative(selected);
+  saveActive(); renderList(); push("discord"); push("roblox"); toast("Saved & synced.");
+  addAudit(selected.cad,"Saved / Synced");
+};
+$("#close").onclick=()=>{
+  if(!selected)return;
+  selected.status="Cleared"; saveActive(); renderList(); push("discord"); push("roblox"); toast("Call Cleared.");
+  addAudit(selected.cad,"Cleared");
+};
+$("#addUnit").onclick=()=>{
+  if(!selected)return;
+  const u=$("#apparatus").value.trim(); if(!u)return;
+  selected.units.add(u); saveActive(); renderUnits(); push("discord"); push("roblox");
+};
+$("#clrStation").onclick=()=>{
+  if(!selected)return; const tag=`Station ${selected.station}`;
+  if(selected.units.has(tag)){selected.units.delete(tag); saveActive(); renderUnits();}
+};
+
+/* ---------- DISCORD / ROBLOX BRIDGE ---------- */
+async function push(kind){
+  if(!selected){toast("Select a call first");return;}
+  const payload={action:kind,call:serializable(selected)};
+  try{
+    const r=await fetch(`${BRIDGE}/upsert`,{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify(payload)});
+    await r.json(); addAudit(selected.cad,`Pushed ${kind}`); 
+  }catch(e){console.warn("Bridge error",e);toast("Bridge Error");}
+}
+function serializable(c){
+  return {cadNumber:c.cad,station:c.station,stationName:STATIONS[c.station],category:c.category,
+    subtype:c.subtype,priority:c.prio,determinant:c.det,status:c.status,openedZulu:c.opened,
+    location:c.location,cross:c.cross,city:c.city,caller:c.caller,phone:c.phone,
+    narrative:c.narrative,answers:c.answers,units:Array.from(c.units||[]),flags:c.flags,
+    dispatcher:(localStorage.getItem("rbDisp")||"Unknown")};
+}
+
+/* ---------- AUDIT LOGGER ---------- */
+let AUDIT=JSON.parse(localStorage.getItem("rb_audit")||"{}");
+function addAudit(cad,msg){
+  if(!AUDIT[cad])AUDIT[cad]=[];
+  AUDIT[cad].push({t:nowZ(),m:msg,by:localStorage.getItem("rbDisp")||"Unknown"});
+  localStorage.setItem("rb_audit",JSON.stringify(AUDIT));
+  loadAudit(cad);
+}
+function loadAudit(cad){
+  const log=AUDIT[cad]||[]; const host=$("#auditLog"); host.innerHTML="";
+  log.slice(-10).forEach(e=>{
+    const d=document.createElement("div");
+    d.innerHTML=`<time>${e.t}</time> ${e.by}: ${e.m}`;
+    host.appendChild(d);
+  });
+}
+
+/* ---------- INIT ---------- */
+function init(){
+  $("#disp").textContent=localStorage.getItem("rbDisp")||"Unknown";
+  buildSubtype(); renderList();
+  setInterval(()=>$("#clock").textContent=new Date().toUTCString().slice(17,25)+"Z",1000);
+}
+$("#category").onchange = () => {
+  buildSubtype();
+  autoCompute();
+};
+
+document.addEventListener("DOMContentLoaded",init);
+</script>
+<div class="toast"></div>
+<!-- =======================
+     TONE PREVIEW + CONSOLE
+     ======================= -->
+<script>
+const tones = {
+  FIRE: 80832292391039,
+  EMS: 8385811240,
+  RESCUE: 103864655671102
+};
+
+/* ---- Tone preview panel ---- */
+const tonePanel = document.createElement("div");
+tonePanel.style.position="fixed";
+tonePanel.style.left="14px";
+tonePanel.style.bottom="14px";
+tonePanel.style.display="flex";
+tonePanel.style.flexDirection="column";
+tonePanel.style.gap="6px";
+tonePanel.innerHTML=`
+  <button class='btn' style='width:160px'>Play Fire Tone</button>
+  <button class='btn' style='width:160px'>Play EMS Tone</button>
+  <button class='btn' style='width:160px'>Play Rescue Tone</button>
+`;
+document.body.appendChild(tonePanel);
+
+tonePanel.querySelectorAll("button").forEach(btn=>{
+  btn.onclick=()=>{
+    const type=btn.textContent.includes("Fire")?"FIRE":btn.textContent.includes("EMS")?"EMS":"RESCUE";
+    const audio=new Audio(`https://www.roblox.com/asset/?id=${tones[type]}`);
+    audio.volume=0.6; audio.play();
+    toast(`${type} tone played`);
+  };
+});
+
+/* ---- Developer Console (F12) ---- */
+const consolePanel=document.createElement("textarea");
+consolePanel.style.position="fixed";
+consolePanel.style.top="50px";
+consolePanel.style.right="10px";
+consolePanel.style.width="420px";
+consolePanel.style.height="300px";
+consolePanel.style.zIndex="999";
+consolePanel.style.background="#0b0f18";
+consolePanel.style.border="1px solid var(--line)";
+consolePanel.style.borderRadius="8px";
+consolePanel.style.padding="8px";
+consolePanel.style.display="none";
+consolePanel.style.color="var(--ink)";
+document.body.appendChild(consolePanel);
+
+window.addEventListener("keydown",e=>{
+  if(e.key==="F12"){
+    e.preventDefault();
+    if(consolePanel.style.display==="none"){
+      consolePanel.style.display="block";
+      consolePanel.value=JSON.stringify(selected||{},null,2);
+    }else{
+      consolePanel.style.display="none";
+    }
+  }
+});
+</script>
+
+<footer style="text-align:center;font-size:11px;color:#789;margin:8px 0;">
+  Riverbend County Dispatch Center • PROQA v7.0 Advanced • © 2025
+</footer>
+</body>
+</html>
