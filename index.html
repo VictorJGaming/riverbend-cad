@@ -328,10 +328,12 @@ textarea{min-height:90px;resize:vertical}
    CORE CONFIG + DATA TABLES
    =========================== */
 const BRIDGE = "https://rivebendhook.vicanator423.workers.dev";
-const STATIONS={"4":"Station 4 RBVFD","3":"Station 3 RBVFD"};
-const STATUS_FLOW=["DISPATCHED","ENROUTE","ONSCENE","TRANSPORT","RETURNING","CLEAR"];
+const STATIONS = {"4":"Station 4 RBVFD","3":"Station 3 RBVFD"};
+const STATUS_FLOW = ["DISPATCHED","ENROUTE","ONSCENE","TRANSPORT","RETURNING","CLEAR"];
+const pushCooldownTime = 3000;
+let pushCooldown = false;
 
-const SUBTYPES={
+const SUBTYPES = {
  FIRE:['Alarm – Fire','Structure Fire','Vehicle Fire','Brush / Wildland','Gas Leak / HazMat'],
  EMS:['Breathing Problems','Chest Pain','Cardiac Arrest','Overdose / Poisoning','Unconscious / Fainting','Seizure','Trauma','Stroke','Sick Person'],
  RESCUE:['MVC – Injury','MVC – High Velocity','MVC – Entrapment','MVC – Pin-in','MVC – Rollover','Technical Rescue'],
@@ -385,6 +387,7 @@ function generateNarrative(c){
   if(c.units&&c.units.size) t+=`. Units: ${Array.from(c.units).join(', ')}.`;
   return t;
 }
+
 /* ===========================
    CORE STATE + UTILITIES
    =========================== */
@@ -442,61 +445,33 @@ function selectCall(cad){
 }
 
 /* ---------- SUBTYPE & QUESTIONS ---------- */
-function buildSubtype() {
-  const cat = $("#category").value;
-  const list = SUBTYPES[cat] || [];
-  const subtypeEl = $("#subtype");
-
-  subtypeEl.innerHTML = "";
-  if (!list.length) {
-    subtypeEl.innerHTML = "<option disabled selected>No subtypes available</option>";
-    $("#questionHost").innerHTML = "";
-    return;
-  }
-
-  list.forEach(sub => {
-    const opt = document.createElement("option");
-    opt.value = sub;
-    opt.textContent = sub;
+function buildSubtype(){
+  const cat=$("#category").value;
+  const list=SUBTYPES[cat]||[];
+  const subtypeEl=$("#subtype");
+  subtypeEl.innerHTML="";
+  list.forEach(sub=>{
+    const opt=document.createElement("option");
+    opt.value=sub;
+    opt.textContent=sub;
     subtypeEl.appendChild(opt);
   });
-
-  // choose or reset subtype
-  if (selected && list.includes(selected.subtype)) {
-    subtypeEl.value = selected.subtype;
-  } else {
-    subtypeEl.value = list[0];
-    if (selected) selected.subtype = list[0];
-  }
-
-  renderQuestions(); // <-- refresh question list
+  if(selected && list.includes(selected.subtype)) subtypeEl.value=selected.subtype;
+  else if(list.length) subtypeEl.value=list[0];
+  renderQuestions();
 }
-function renderQuestions() {
-  const st = $("#subtype").value;
-  const spec = PROQA[st];
-  const host = $("#questionHost");
-  host.innerHTML = "";
-
-  if (!spec) {
-    $("#det").value = "";
-    return;
-  }
-
-  // create dropdowns for each question
-  for (const [q, opts] of Object.entries(spec.qs)) {
-    const wrap = document.createElement("div");
-    wrap.innerHTML = `
-      <label>${q}</label>
-      <select data-q="${q}">
-        ${opts.map(o => `<option>${o}</option>`).join("")}
-      </select>`;
+function renderQuestions(){
+  const st=$("#subtype").value;
+  const spec=PROQA[st];
+  const host=$("#questionHost");
+  host.innerHTML="";
+  if(!spec){$("#det").value="";return;}
+  for(const[q,opts] of Object.entries(spec.qs)){
+    const wrap=document.createElement("div");
+    wrap.innerHTML=`<label>${q}</label><select data-q="${q}">${opts.map(o=>`<option>${o}</option>`).join("")}</select>`;
     host.appendChild(wrap);
   }
-
-  // attach onchange → recompute determinant
-  host.querySelectorAll("select").forEach(sel => {
-    sel.onchange = autoCompute;
-  });
+  host.querySelectorAll("select").forEach(sel=>sel.onchange=autoCompute);
 }
 function answersFromUI(){
   const o={}; document.querySelectorAll("[data-q]").forEach(el=>o[el.dataset.q]=el.value);
@@ -555,15 +530,14 @@ function renderUnits(){
     chip.innerHTML=`<strong>${id}</strong><select data-unit="${id}">${STATUS_FLOW.map(s=>`<option>${s}</option>`).join("")}</select>`;
     host.appendChild(chip);
   });
- host.querySelectorAll("select").forEach(s=>s.onchange=e=>{
-  const id = e.target.dataset.unit;
-  const st = e.target.value;
-  if (!id.startsWith("Station") && (st === "DISPATCHED" || st === "ENROUTE")) {
-    const tag = `Station ${selected.station}`;
-    if (selected.units.has(tag)) selected.units.delete(tag);
-  }
-  saveActive(); // no automatic push here
-});
+  // removed auto push here
+  host.querySelectorAll("select").forEach(s=>s.onchange=e=>{
+    const id=e.target.dataset.unit; const st=e.target.value;
+    if(!id.startsWith("Station")&&(st==="DISPATCHED"||st==="ENROUTE")){
+      const tag=`Station ${selected.station}`; if(selected.units.has(tag))selected.units.delete(tag);
+    }
+    saveActive();
+  });
 }
 
 /* ---------- BUTTONS ---------- */
@@ -574,28 +548,32 @@ $("#newCall").onclick=()=>{
     caller:"",phone:"",answers:{},units:new Set(["Station 4"]),flags:{},discordId:null,narrative:""};
   ACTIVE.unshift(c); saveActive(); renderList(); selectCall(cad);
 };
-$("#save").onclick=()=>{
+$("#save").onclick=async()=>{
+  if(pushCooldown)return; pushCooldown=true;
   if(!selected)return;
-  selected.station=$("#station").value; selected.category=$("#category").value; selected.subtype=$("#subtype").value;
-  selected.prio=$("#prio").value; selected.det=$("#det").value; selected.status=$("#status").value;
-  selected.location=$("#loc").value; selected.cross=$("#cross").value; selected.city=$("#city").value;
-  selected.caller=$("#caller").value; selected.phone=$("#phone").value;
-  selected.narrative=$("#narr").value||generateNarrative(selected);
-  saveActive(); renderList(); push("discord"); push("roblox"); toast("Saved & synced.");
-  addAudit(selected.cad,"Saved / Synced");
+  selected.station=$("#station").value; selected.category=$("#category").value;
+  selected.subtype=$("#subtype").value; selected.prio=$("#prio").value;
+  selected.det=$("#det").value; selected.status=$("#status").value;
+  selected.location=$("#loc").value; selected.cross=$("#cross").value;
+  selected.city=$("#city").value; selected.caller=$("#caller").value;
+  selected.phone=$("#phone").value; selected.narrative=$("#narr").value||generateNarrative(selected);
+  saveActive(); renderList();
+  await push("discord"); await push("roblox");
+  toast("Saved & synced."); addAudit(selected.cad,"Saved / Synced");
+  setTimeout(()=>pushCooldown=false,pushCooldownTime);
 };
-$("#close").onclick=()=>{
+$("#close").onclick=async()=>{
+  if(pushCooldown)return; pushCooldown=true;
   if(!selected)return;
-  selected.status="Cleared"; saveActive(); renderList(); push("discord"); push("roblox"); toast("Call Cleared.");
-  addAudit(selected.cad,"Cleared");
+  selected.status="Cleared"; saveActive(); renderList();
+  await push("discord"); await push("roblox");
+  toast("Call Cleared."); addAudit(selected.cad,"Cleared");
+  setTimeout(()=>pushCooldown=false,pushCooldownTime);
 };
 $("#addUnit").onclick=()=>{
   if(!selected)return;
   const u=$("#apparatus").value.trim(); if(!u)return;
- selected.units.add(u);
-saveActive();
-renderUnits();
-toast("Unit added.");
+  selected.units.add(u); saveActive(); renderUnits(); toast("Unit added.");
 };
 $("#clrStation").onclick=()=>{
   if(!selected)return; const tag=`Station ${selected.station}`;
@@ -642,16 +620,8 @@ function init(){
   buildSubtype(); renderList();
   setInterval(()=>$("#clock").textContent=new Date().toUTCString().slice(17,25)+"Z",1000);
 }
-$("#category").onchange = () => {
-  buildSubtype();
-  autoCompute();
-};
-
-$("#subtype").onchange = () => {
-  renderQuestions();
-  autoCompute();
-};
-
+$("#category").onchange=()=>{buildSubtype();autoCompute();};
+$("#subtype").onchange=()=>{renderQuestions();autoCompute();};
 document.addEventListener("DOMContentLoaded",init);
 </script>
 <div class="toast"></div>
