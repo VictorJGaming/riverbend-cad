@@ -442,7 +442,7 @@ function selectCall(cad){
 }
 
 /* ---------- SUBTYPE & QUESTIONS ---------- */
-function buildSubtype(){
+function buildSubtype() {
   const cat = $("#category").value;
   const list = SUBTYPES[cat] || [];
   const subtypeEl = $("#subtype");
@@ -450,6 +450,7 @@ function buildSubtype(){
   subtypeEl.innerHTML = "";
   if (!list.length) {
     subtypeEl.innerHTML = "<option disabled selected>No subtypes available</option>";
+    $("#questionHost").innerHTML = "";
     return;
   }
 
@@ -460,7 +461,7 @@ function buildSubtype(){
     subtypeEl.appendChild(opt);
   });
 
-  // Set the current subtype for continuity
+  // choose or reset subtype
   if (selected && list.includes(selected.subtype)) {
     subtypeEl.value = selected.subtype;
   } else {
@@ -468,17 +469,34 @@ function buildSubtype(){
     if (selected) selected.subtype = list[0];
   }
 
-  renderQuestions();
+  renderQuestions(); // <-- refresh question list
 }
-function renderQuestions(){
-  const st=$("#subtype").value; const spec=PROQA[st]; const host=$("#questionHost"); host.innerHTML="";
-  if(!spec){$("#det").value="";return;}
-  for(const[q,opts]of Object.entries(spec.qs)){
-    const w=document.createElement("div");
-    w.innerHTML=`<label>${q}</label><select data-q="${q}">${opts.map(o=>`<option>${o}</option>`).join("")}</select>`;
-    host.appendChild(w);
+function renderQuestions() {
+  const st = $("#subtype").value;
+  const spec = PROQA[st];
+  const host = $("#questionHost");
+  host.innerHTML = "";
+
+  if (!spec) {
+    $("#det").value = "";
+    return;
   }
-  host.querySelectorAll("select").forEach(s=>s.onchange=autoCompute);
+
+  // create dropdowns for each question
+  for (const [q, opts] of Object.entries(spec.qs)) {
+    const wrap = document.createElement("div");
+    wrap.innerHTML = `
+      <label>${q}</label>
+      <select data-q="${q}">
+        ${opts.map(o => `<option>${o}</option>`).join("")}
+      </select>`;
+    host.appendChild(wrap);
+  }
+
+  // attach onchange → recompute determinant
+  host.querySelectorAll("select").forEach(sel => {
+    sel.onchange = autoCompute;
+  });
 }
 function answersFromUI(){
   const o={}; document.querySelectorAll("[data-q]").forEach(el=>o[el.dataset.q]=el.value);
@@ -621,6 +639,11 @@ function init(){
 }
 $("#category").onchange = () => {
   buildSubtype();
+  autoCompute();
+};
+
+$("#subtype").onchange = () => {
+  renderQuestions();
   autoCompute();
 };
 
