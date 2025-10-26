@@ -585,7 +585,11 @@ async function push(kind){
   if(!selected){toast("Select a call first");return;}
   const payload={action:kind,call:serializable(selected)};
   try{
-    const r=await fetch(`${BRIDGE}/upsert`,{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify(payload)});
+   const r = await fetch(`${BRIDGE}/upsert?origin=web`, {
+  method:"POST",
+  headers:{"content-type":"application/json"},
+  body:JSON.stringify(payload)
+});
     await r.json(); addAudit(selected.cad,`Pushed ${kind}`); 
   }catch(e){console.warn("Bridge error",e);toast("Bridge Error");}
 }
@@ -686,6 +690,58 @@ window.addEventListener("keydown",e=>{
     }
   }
 });
+   /* ===========================
+   LIVE SYNC ENGINE
+   =========================== */
+
+const SYNC_INTERVAL = 5000; // every 5s
+
+async function fetchActiveCalls() {
+  try {
+    const res = await fetch(`${BRIDGE}/calls`);
+    const data = await res.json();
+
+    if (!Array.isArray(data)) return;
+
+    // Replace local ACTIVE list with server truth
+    ACTIVE = data.map(c => ({
+      cad: c.cadNumber,
+      station: c.station,
+      category: c.category,
+      subtype: c.subtype,
+      prio: c.priority,
+      det: c.determinant,
+      status: c.status,
+      location: c.location,
+      cross: c.cross,
+      city: c.city,
+      caller: c.caller,
+      phone: c.phone,
+      narrative: c.narrative,
+      answers: c.answers || {},
+      units: new Set(c.units || []),
+      flags: c.flags || {},
+      dispatcher: c.dispatcher || "Unknown"
+    }));
+
+    saveActive();
+    renderList();
+
+    // Keep the currently selected call focused
+    if (selected) {
+      const match = ACTIVE.find(x => x.cad === selected.cad);
+      if (match) selectCall(match.cad);
+    }
+
+  } catch (err) {
+    console.warn("[SYNC] Error fetching /calls", err);
+  }
+}
+
+// Run sync loop
+setInterval(fetchActiveCalls, SYNC_INTERVAL);
+window.addEventListener("focus", fetchActiveCalls);
+fetchActiveCalls();
 </script>
 
 <footer style="text-align:center;font-size:11px;color:#789;margin:8px 0;">
@@ -693,3 +749,4 @@ window.addEventListener("keydown",e=>{
 </footer>
 </body>
 </html>
+
